@@ -8,11 +8,11 @@ import 'package:user_list/features/home/presentation/logic/user.dart';
 part 'home_state.dart';
 
 class HomeController extends GetxController {
-  final GetUsersUseCase _findProductToLookupCase;
+  final GetUsersUseCase _getUsersUseCase;
   final ScrollController scrollController = ScrollController();
-  HomeState state = const HomeState();
+  HomeState state = HomeState();
 
-  HomeController(this._findProductToLookupCase);
+  HomeController(this._getUsersUseCase);
 
   @override
   void onInit() {
@@ -30,15 +30,15 @@ class HomeController extends GetxController {
 
   Future<void> _fetchInitialUsers() async {
     for (int i = 0; i < 15; i++) {
-      await findProductToLookup();
+      await getUsers();
     }
   }
 
-  Future<void> findProductToLookup() async {
+  Future<void> getUsers() async {
     state = state.copyWith(isLoading: true);
     update();
 
-    final result = await _findProductToLookupCase.run();
+    final result = await _getUsersUseCase.run();
 
     result.fold(
       (error) {
@@ -46,12 +46,12 @@ class HomeController extends GetxController {
         update();
       },
       (r) {
-        final List<User> users = state.users ?? [];
-        users.add(r!.user);
+        final List<User> updatedUsers = List.from(state.users ?? []);
+        updatedUsers.add(r!.user);
 
         state = state.copyWith(
           isLoading: false,
-          users: users,
+          users: updatedUsers,
         );
         update();
       },

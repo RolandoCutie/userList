@@ -7,14 +7,14 @@ class HomeState {
 
   final List<User>? users;
 
-  const HomeState({
+  HomeState({
     this.error = "",
     this.isLoading = false,
     this.isSearching = false,
-    this.users,
+    this.users = const [],
   });
 
-  factory HomeState.initial() => const HomeState();
+  factory HomeState.initial() => HomeState();
 
   bool get hasError => error.isNotEmpty == true;
 
