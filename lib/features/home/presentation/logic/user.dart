@@ -23,7 +23,6 @@ class Datos {
   final Dob? dob;
   final String? phone;
   final String? cell;
-  final Id? id;
   final Picture? picture;
   final String? nat;
 
@@ -35,7 +34,6 @@ class Datos {
     this.dob,
     this.phone,
     this.cell,
-    this.id,
     this.picture,
     this.nat,
   });
@@ -50,7 +48,6 @@ class Datos {
         dob: json["dob"] == null ? null : Dob.fromJson(json["dob"]),
         phone: json["phone"],
         cell: json["cell"],
-        id: json["id"] == null ? null : Id.fromJson(json["id"]),
         picture:
             json["picture"] == null ? null : Picture.fromJson(json["picture"]),
         nat: json["nat"],
@@ -64,7 +61,6 @@ class Datos {
         "dob": dob?.toJson(),
         "phone": phone,
         "cell": cell,
-        "id": id?.toJson(),
         "picture": picture?.toJson(),
         "nat": nat,
       };
@@ -87,26 +83,6 @@ class Dob {
   Map<String, dynamic> toJson() => {
         "date": date?.toIso8601String(),
         "age": age,
-      };
-}
-
-class Id {
-  final String? name;
-  final String? value;
-
-  Id({
-    this.name,
-    this.value,
-  });
-
-  factory Id.fromJson(Map<String, dynamic> json) => Id(
-        name: json["name"],
-        value: json["value"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "value": value,
       };
 }
 
