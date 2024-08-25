@@ -3,41 +3,36 @@ import 'dart:convert';
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
 class User {
-  final Result? results;
+  final Datos? result;
 
   User({
-    this.results,
+    this.result,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        results: json["results"] == null
-            ? []
-            : json["results"]!.map((x) => Result.fromJson(x)),
+        result:
+            json["results"] == null ? null : Datos.fromJson(json["results"][0]),
       );
 }
 
-class Result {
+class Datos {
   final String? gender;
   final Name? name;
   final Location? location;
   final String? email;
-  final Login? login;
   final Dob? dob;
-  final Dob? registered;
   final String? phone;
   final String? cell;
   final Id? id;
   final Picture? picture;
   final String? nat;
 
-  Result({
+  Datos({
     this.gender,
     this.name,
     this.location,
     this.email,
-    this.login,
     this.dob,
-    this.registered,
     this.phone,
     this.cell,
     this.id,
@@ -45,18 +40,14 @@ class Result {
     this.nat,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory Datos.fromJson(Map<String, dynamic> json) => Datos(
         gender: json["gender"],
         name: json["name"] == null ? null : Name.fromJson(json["name"]),
         location: json["location"] == null
             ? null
             : Location.fromJson(json["location"]),
         email: json["email"],
-        login: json["login"] == null ? null : Login.fromJson(json["login"]),
         dob: json["dob"] == null ? null : Dob.fromJson(json["dob"]),
-        registered: json["registered"] == null
-            ? null
-            : Dob.fromJson(json["registered"]),
         phone: json["phone"],
         cell: json["cell"],
         id: json["id"] == null ? null : Id.fromJson(json["id"]),
@@ -70,9 +61,7 @@ class Result {
         "name": name?.toJson(),
         "location": location?.toJson(),
         "email": email,
-        "login": login?.toJson(),
         "dob": dob?.toJson(),
-        "registered": registered?.toJson(),
         "phone": phone,
         "cell": cell,
         "id": id?.toJson(),
@@ -126,7 +115,7 @@ class Location {
   final String? city;
   final String? state;
   final String? country;
-  final String? postcode;
+
   final Coordinates? coordinates;
   final Timezone? timezone;
 
@@ -135,7 +124,6 @@ class Location {
     this.city,
     this.state,
     this.country,
-    this.postcode,
     this.coordinates,
     this.timezone,
   });
@@ -145,7 +133,6 @@ class Location {
         city: json["city"],
         state: json["state"],
         country: json["country"],
-        postcode: json["postcode"],
         coordinates: json["coordinates"] == null
             ? null
             : Coordinates.fromJson(json["coordinates"]),
@@ -159,7 +146,6 @@ class Location {
         "city": city,
         "state": state,
         "country": country,
-        "postcode": postcode,
         "coordinates": coordinates?.toJson(),
         "timezone": timezone?.toJson(),
       };
@@ -222,46 +208,6 @@ class Timezone {
   Map<String, dynamic> toJson() => {
         "offset": offset,
         "description": description,
-      };
-}
-
-class Login {
-  final String? uuid;
-  final String? username;
-  final String? password;
-  final String? salt;
-  final String? md5;
-  final String? sha1;
-  final String? sha256;
-
-  Login({
-    this.uuid,
-    this.username,
-    this.password,
-    this.salt,
-    this.md5,
-    this.sha1,
-    this.sha256,
-  });
-
-  factory Login.fromJson(Map<String, dynamic> json) => Login(
-        uuid: json["uuid"],
-        username: json["username"],
-        password: json["password"],
-        salt: json["salt"],
-        md5: json["md5"],
-        sha1: json["sha1"],
-        sha256: json["sha256"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "uuid": uuid,
-        "username": username,
-        "password": password,
-        "salt": salt,
-        "md5": md5,
-        "sha1": sha1,
-        "sha256": sha256,
       };
 }
 
