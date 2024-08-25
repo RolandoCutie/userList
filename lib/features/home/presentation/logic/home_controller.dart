@@ -29,7 +29,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> _fetchInitialUsers() async {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 50; i++) {
       await getUsers();
     }
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:user_list/core/theme/app_colors.dart';
 import 'package:user_list/features/home/presentation/logic/user.dart';
 
 class UserDetailsPage extends StatelessWidget {
@@ -8,7 +10,8 @@ class UserDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Get.arguments;
+    final User user = Get.arguments as User;
+    final textTheme = Get.theme.textTheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -19,63 +22,66 @@ class UserDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Información del usuario
             ListTile(
               title: Text(
                   "${user.result!.name!.first} ${user.result!.name!.last}",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              subtitle:
-                  Text(user.result!.email!, style: TextStyle(fontSize: 16)),
+                  style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.blueNavy(),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22)),
+              subtitle: Text(user.result!.email!,
+                  style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.blueNavy(),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(user.result!.picture!.large!),
                 radius: 30,
               ),
             ),
             const SizedBox(height: 20),
-
-            // Información adicional
-
-            _buildInfoTile("Gender", user.result!.gender!),
+            _buildInfoTile(
+              "Gender",
+              user.result!.gender!,
+            ),
             _buildInfoTile("Date of Birth",
                 user.result!.dob!.date!.toLocal().toString().split(' ')[0]),
             _buildInfoTile("Phone", user.result!.phone!),
             _buildInfoTile("Cell", user.result!.cell!),
             _buildInfoTile("Nationality", user.result!.nat!),
-
-            _buildInfoTile("ID", user.result!.id!.value! ?? "N/A"),
-            const SizedBox(height: 20),
-
-            // Dirección
-            Text("Location",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Text(
+            _buildInfoTile("Location",
                 "${user.result!.location!.street!.number!} ${user.result!.location!.street!.name}, ${user.result!.location!.city!}, ${user.result!.location!.state}, ${user.result!.location!.country}"),
-            const SizedBox(height: 10),
             SizedBox(
-              height: 200,
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
+              height: 400,
+              width: 400,
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(
                     double.parse(user.result!.location!.coordinates!.latitude!),
                     double.parse(
                         user.result!.location!.coordinates!.longitude!),
                   ),
-                  zoom: 12,
                 ),
-                markers: {
-                  Marker(
-                    markerId: MarkerId("userLocation"),
-                    position: LatLng(
-                      double.parse(
-                          user.result!.location!.coordinates!.latitude!),
-                      double.parse(
-                          user.result!.location!.coordinates!.longitude!),
-                    ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: "com.example.user_list",
                   ),
-                },
+                  MarkerLayer(markers: [
+                    Marker(
+                      point: LatLng(
+                        double.parse(
+                            user.result!.location!.coordinates!.latitude!),
+                        double.parse(
+                            user.result!.location!.coordinates!.longitude!),
+                      ),
+                      child: const Icon(Icons.location_pin),
+                    ),
+                  ])
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -83,12 +89,22 @@ class UserDetailsPage extends StatelessWidget {
   }
 
   Widget _buildInfoTile(String title, String data) {
+    final textTheme = Get.theme.textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
       child: Row(
         children: [
-          Text("$title: ", style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(data),
+          Text("$title: ",
+              style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.blue(),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          Flexible(
+              child: Text(data,
+                  style: textTheme.titleMedium?.copyWith(
+                      color: AppColors.darkGrey(),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16))),
         ],
       ),
     );

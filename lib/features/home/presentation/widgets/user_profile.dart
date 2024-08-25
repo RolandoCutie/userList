@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:user_list/core/theme/app_colors.dart';
 
 class UserProfile extends StatelessWidget {
   final String imageUrl;
@@ -16,6 +18,7 @@ class UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Get.theme.textTheme;
     return ListTile(
       contentPadding:
           const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -23,20 +26,16 @@ class UserProfile extends StatelessWidget {
         backgroundImage: NetworkImage(imageUrl),
         radius: 25,
       ),
-      title: Text(
-        fullName,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      subtitle: Text(
-        email,
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.grey[600],
-        ),
-      ),
+      title: Text(fullName,
+          style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.blueNavy(),
+              fontWeight: FontWeight.bold,
+              fontSize: 22)),
+      subtitle: Text(email,
+          style: textTheme.titleMedium?.copyWith(
+              color: AppColors.darkGrey(),
+              fontWeight: FontWeight.bold,
+              fontSize: 18)),
       onTap: onTap,
     );
   }
