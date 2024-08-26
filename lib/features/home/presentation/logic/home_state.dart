@@ -3,15 +3,15 @@ part of 'home_controller.dart';
 class HomeState {
   final String error;
   final bool isLoading;
-  final bool isSearching;
+  double mapZoom;
 
   final List<User>? users;
 
   HomeState({
     this.error = "",
     this.isLoading = false,
-    this.isSearching = false,
     this.users = const [],
+    this.mapZoom = 12,
   });
 
   factory HomeState.initial() => HomeState();
@@ -21,15 +21,14 @@ class HomeState {
   HomeState copyWith({
     String? error,
     bool? isLoading,
-    bool? isSearching,
     List<User>? users,
+    double? mapZoom,
   }) {
     return HomeState(
-      error: error ?? this.error,
-      isLoading: isLoading ?? this.isLoading,
-      isSearching: isSearching ?? this.isSearching,
-      users: users ?? this.users,
-    );
+        error: error ?? this.error,
+        isLoading: isLoading ?? this.isLoading,
+        users: users ?? this.users,
+        mapZoom: mapZoom ?? this.mapZoom);
   }
 
   @override
@@ -38,7 +37,7 @@ class HomeState {
 
     return other is HomeState &&
         other.isLoading == isLoading &&
-        other.isSearching == isSearching &&
+        other.mapZoom == mapZoom &&
         other.users == users &&
         other.error == error;
   }
@@ -46,7 +45,7 @@ class HomeState {
   @override
   int get hashCode {
     return isLoading.hashCode ^
-        isSearching.hashCode ^
+        mapZoom.hashCode ^
         users.hashCode ^
         error.hashCode;
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:user_list/features/home/logic/get_users.dart';
 import 'package:user_list/features/home/presentation/logic/user.dart';
@@ -12,11 +13,14 @@ class HomeController extends GetxController {
   final ScrollController scrollController = ScrollController();
   HomeState state = HomeState();
 
+  late MapController mapController;
+
   HomeController(this._getUsersUseCase);
 
   @override
   void onInit() {
     super.onInit();
+    mapController = MapController();
     _fetchInitialUsers();
 
     scrollController.addListener(() {
@@ -62,5 +66,19 @@ class HomeController extends GetxController {
   void onClose() {
     scrollController.dispose();
     super.onClose();
+  }
+
+  void onMoreZoom() {
+    if (state.mapZoom > 20) return;
+    state = state.copyWith(mapZoom: state.mapZoom += 1);
+    mapController.move(mapController.camera.center, state.mapZoom);
+    update();
+  }
+
+  void onLessZoom() {
+    if (state.mapZoom < 5) return;
+    state = state.copyWith(mapZoom: state.mapZoom -= 1);
+    mapController.move(mapController.camera.center, state.mapZoom);
+    update();
   }
 }
