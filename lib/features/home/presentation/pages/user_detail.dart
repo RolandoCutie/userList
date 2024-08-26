@@ -65,20 +65,22 @@ class UserDetailsPage extends StatelessWidget {
                 children: [
                   TileLayer(
                     urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: "com.example.user_list",
                   ),
-                  MarkerLayer(markers: [
-                    Marker(
-                      point: LatLng(
-                        double.parse(
-                            user.result!.location!.coordinates!.latitude!),
-                        double.parse(
-                            user.result!.location!.coordinates!.longitude!),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: LatLng(
+                          double.parse(
+                              user.result!.location!.coordinates!.latitude!),
+                          double.parse(
+                              user.result!.location!.coordinates!.longitude!),
+                        ),
+                        child: const Icon(Icons.location_pin),
                       ),
-                      child: const Icon(Icons.location_pin),
-                    ),
-                  ])
+                    ],
+                  ),
                 ],
               ),
             )
