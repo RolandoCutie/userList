@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:user_list/core/theme/app_colors.dart';
+import 'package:user_list/features/home/presentation/logic/home_controller.dart';
 import 'package:user_list/features/home/presentation/logic/user.dart';
 
 class UserDetailsPage extends StatelessWidget {
@@ -13,81 +14,129 @@ class UserDetailsPage extends StatelessWidget {
     final User user = Get.arguments as User;
     final textTheme = Get.theme.textTheme;
 
-    return Scaffold(
-      appBar: AppBar(
-          title:
-              Text("${user.result!.name!.first} ${user.result!.name!.last}")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              title: Text(
-                  "${user.result!.name!.first} ${user.result!.name!.last}",
-                  style: textTheme.bodyMedium?.copyWith(
-                      color: AppColors.blueNavy(),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22)),
-              subtitle: Text(user.result!.email!,
-                  style: textTheme.bodyMedium?.copyWith(
-                      color: AppColors.blueNavy(),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18)),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(user.result!.picture!.large!),
-                radius: 30,
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildInfoTile(
-              "Gender",
-              user.result!.gender!,
-            ),
-            _buildInfoTile("Date of Birth",
-                user.result!.dob!.date!.toLocal().toString().split(' ')[0]),
-            _buildInfoTile("Phone", user.result!.phone!),
-            _buildInfoTile("Cell", user.result!.cell!),
-            _buildInfoTile("Nationality", user.result!.nat!),
-            _buildInfoTile("Location",
-                "${user.result!.location!.street!.number!} ${user.result!.location!.street!.name}, ${user.result!.location!.city!}, ${user.result!.location!.state}, ${user.result!.location!.country}"),
-            SizedBox(
-              height: 400,
-              width: 400,
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter: LatLng(
-                    double.parse(user.result!.location!.coordinates!.latitude!),
-                    double.parse(
-                        user.result!.location!.coordinates!.longitude!),
-                  ),
+    return GetBuilder<HomeController>(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+            title:
+                Text("${user.result!.name!.first} ${user.result!.name!.last}")),
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListTile(
+                title: Text(
+                    "${user.result!.name!.first} ${user.result!.name!.last}",
+                    style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.blueNavy(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22)),
+                subtitle: Text(user.result!.email!,
+                    style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.blueNavy(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18)),
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(user.result!.picture!.large!),
+                  radius: 30,
                 ),
+              ),
+              const SizedBox(height: 20),
+              _buildInfoTile(
+                "Gender",
+                user.result!.gender!,
+              ),
+              _buildInfoTile("Date of Birth",
+                  user.result!.dob!.date!.toLocal().toString().split(' ')[0]),
+              _buildInfoTile("Phone", user.result!.phone!),
+              _buildInfoTile("Cell", user.result!.cell!),
+              _buildInfoTile("Nationality", user.result!.nat!),
+              _buildInfoTile("Location",
+                  "${user.result!.location!.street!.number!} ${user.result!.location!.street!.name}, ${user.result!.location!.city!}, ${user.result!.location!.state}, ${user.result!.location!.country}"),
+              Stack(
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: "com.example.user_list",
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: LatLng(
+                  SizedBox(
+                    height: 400,
+                    width: 400,
+                    child: FlutterMap(
+                      mapController: _.mapController,
+                      options: MapOptions(
+                        initialZoom: _.state.mapZoom,
+                        initialCenter: LatLng(
                           double.parse(
                               user.result!.location!.coordinates!.latitude!),
                           double.parse(
                               user.result!.location!.coordinates!.longitude!),
                         ),
-                        child: const Icon(Icons.location_pin),
                       ),
-                    ],
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: "com.example.user_list",
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: LatLng(
+                                double.parse(user
+                                    .result!.location!.coordinates!.latitude!),
+                                double.parse(user
+                                    .result!.location!.coordinates!.longitude!),
+                              ),
+                              child: const Icon(Icons.location_pin),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                        margin: const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            FloatingActionButton(
+                              heroTag: "lessZoom",
+                              backgroundColor: AppColors.white(),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              onPressed: () {
+                                _.onLessZoom();
+                              },
+                              child: Icon(
+                                Icons.remove_circle_outline,
+                                color: AppColors.darkGrey(),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            FloatingActionButton(
+                              heroTag: "moreZoom",
+                              backgroundColor: AppColors.white(),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              onPressed: () {
+                                _.onMoreZoom();
+                              },
+                              child: Icon(
+                                Icons.add_circle_outline,
+                                color: AppColors.darkGrey(),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        )),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
-    );
+            ])),
+      );
+    });
   }
 
   Widget _buildInfoTile(String title, String data) {
